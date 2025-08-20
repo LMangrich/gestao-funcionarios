@@ -113,7 +113,9 @@ public class FuncionarioServico implements IFuncionarioServico {
             valorTotalSalario = valorTotalSalario.add(funcionario.getSalario());
         }
 
-        System.out.println("Valor total dos salários: " + valorTotalSalario);
+        String valorTotalSalarioFormatado = formatarSalarioBR(valorTotalSalario);
+
+        System.out.println("Valor total dos salários: " + valorTotalSalarioFormatado);
     }
 
     @Override
@@ -123,23 +125,32 @@ public class FuncionarioServico implements IFuncionarioServico {
 
             qntdSalarios = qntdSalarios.setScale(4, RoundingMode.HALF_UP);
 
-            System.out.println(funcionario.getNome() + " recebe " + qntdSalarios + " salários mínimos.");
+            String qntdSalarioFormatado = formatarSalarioBR(qntdSalarios);
+
+            System.out.println(funcionario.getNome() + " recebe " + qntdSalarioFormatado + " salários mínimos.");
         });
     }
 
     // FUNÇÃO AUXILIAR
 
     private String formatarDadosFuncionario(Funcionario funcionario, boolean incluirFuncao){
-        String dataFormatada = funcionario.getDataNascimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-
-        NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
-
-        String salarioFormatado = numberFormat.format(funcionario.getSalario());
+        String dataFormatada = formatarDataBr(funcionario.getDataNascimento());
+        String salarioFormatado = formatarSalarioBR(funcionario.getSalario());
 
         if (incluirFuncao) {
             return funcionario.getNome() + " | " + dataFormatada + " | " + salarioFormatado + " | " + funcionario.getFuncao();
         } else {
             return funcionario.getNome() + " | " + dataFormatada + " | " + salarioFormatado;
         }
+    }
+
+    private String formatarSalarioBR(BigDecimal numero){
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
+
+        return numberFormat.format(numero);
+    }
+
+    private String formatarDataBr(LocalDate data){
+        return data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 }
